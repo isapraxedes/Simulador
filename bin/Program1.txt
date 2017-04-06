@@ -1,0 +1,34 @@
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+blocking_system_call
+generic_instruction
+generic_instruction
+generic_instruction
+create_thread( 22 )
+generic_instruction
+generic_instruction
+create_thread( 28 )
+generic_instruction
+generic_instruction
+generic_instruction
+call(program2)
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+blocking_system_call
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
+generic_instruction
