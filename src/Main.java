@@ -18,7 +18,6 @@ public class Main {
 				if (text.equals("procs")) {
 					System.out.println(text);
 				} else if (text.equals("init")) {
-					System.out.println(text);
 					processo.init();
 				} else if (text.equals("threads")) {
 					System.out.println(text);

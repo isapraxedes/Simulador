@@ -5,16 +5,16 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 
 public class Arquivos {
-	
-	Thread thread1 = new Thread ( new PrintTask( "Programa 1" ));
-	Thread thread2 = new Thread ( new PrintTask( "Programa 1" ));
-	
-	public void init() throws IOException{
-		call("C:/Users/Isabelly/workspace/Simulador/src/program1.txt");
+	int contThread = 00;
+	String process = "program1";
+	String caminho = "C:/Users/Isabelly/workspace/Simulador/src/" + process + ".txt";
+
+	public void init() throws IOException {
+		call(caminho);
 	}
-	
+
 	public void call(String program) throws IOException {
-		thread1.start();
+
 		FileReader arq = new FileReader(program);
 		BufferedReader lerArq = new BufferedReader(arq);
 		read(lerArq);
@@ -23,21 +23,33 @@ public class Arquivos {
 	}
 
 	public void read(BufferedReader arquivo) throws IOException {
+		createNewThread("program1");
 		String linha = arquivo.readLine();
 		while (linha != null) {
-			String[] tokens = linha.split( " " );
-			
-//				for( String token : tokens)
-//				System.out.println( token );
-				
-			if(tokens[0].equals("create_thread(")){
-				
-				
-			}
-			System.out.printf("%s\n", linha);
+			String[] tokens = linha.split(" ");
+			// for( String token : tokens)
+			// System.out.println( token );
 
+			if (tokens[0].equals("create_thread(")) {
+				createNewThread("program1");	
+			} else if (tokens[0].equals("call(")) {
+				System.out.println("hmmmm...novo programa!");
+			} else {
+			System.out.printf("%s\n", linha);
+			}
 			linha = arquivo.readLine();
 		}
 
 	}
+
+	public Thread createNewThread(String PID) {
+
+		Thread thread = new Thread (new PrintTask(PID));
+		 thread.start();
+		 contThread++;
+		 thread.setName(Integer.toString(contThread));
+		 System.out.println(thread.getName());
+		 return thread;
+	}
+
 }
