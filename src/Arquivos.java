@@ -23,7 +23,7 @@ public class Arquivos {
 	}
 
 	public void read(BufferedReader arquivo) throws IOException {
-		createNewThread("program1");
+		createNewThread(process);
 		String linha = arquivo.readLine();
 		while (linha != null) {
 			String[] tokens = linha.split(" ");
@@ -31,9 +31,10 @@ public class Arquivos {
 			// System.out.println( token );
 
 			if (tokens[0].equals("create_thread(")) {
-				createNewThread("program1");	
+				createNewThread(process);	
 			} else if (tokens[0].equals("call(")) {
-				System.out.println("hmmmm...novo programa!");
+				process = tokens[1];
+				call(caminho);
 			} else {
 			System.out.printf("%s\n", linha);
 			}
@@ -48,7 +49,7 @@ public class Arquivos {
 		 thread.start();
 		 contThread++;
 		 thread.setName(Integer.toString(contThread));
-		 System.out.println(thread.getName());
+		 System.out.println(thread.getName() + "  " + PID);
 		 return thread;
 	}
 
