@@ -13,7 +13,7 @@ create_thread( 28 )
 generic_instruction
 generic_instruction
 generic_instruction
-call(program2)
+call( program2 )
 generic_instruction
 generic_instruction
 generic_instruction

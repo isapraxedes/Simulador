@@ -1,56 +1,126 @@
-import java.lang.Thread;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
-public class Arquivos {
-	int contThread = 00;
-	String process = "program1";
-	String caminho = "C:/Users/Isabelly/workspace/Simulador/src/" + process + ".txt";
+public class Arquivos implements Runnable {
 
-	public void init() throws IOException {
-		call(caminho);
-	}
+	private int tick = 300;
+	private int tickThread = 0;
+	private int timeRun = 0;
+	public Boolean keepRunning = true;
+	public List<Process> list = new ArrayList<Process>();
 
-	public void call(String program) throws IOException {
+	File file1 = new File("C:\\Users\\Isabelly\\workspace\\Simulador\\src\\program1.txt");
+	File file2 = new File("C:\\Users\\Isabelly\\workspace\\Simulador\\src\\program2.txt");
 
-		FileReader arq = new FileReader(program);
-		BufferedReader lerArq = new BufferedReader(arq);
-		read(lerArq);
-		arq.close();
-
-	}
-
-	public void read(BufferedReader arquivo) throws IOException {
-		createNewThread(process);
-		String linha = arquivo.readLine();
-		while (linha != null) {
-			String[] tokens = linha.split(" ");
-			// for( String token : tokens)
-			// System.out.println( token );
-
-			if (tokens[0].equals("create_thread(")) {
-				createNewThread(process);	
-			} else if (tokens[0].equals("call(")) {
-				process = tokens[1];
-				call(caminho);
-			} else {
-			System.out.printf("%s\n", linha);
-			}
-			linha = arquivo.readLine();
+	void readFile(File file) {
+		Scanner sc;
+		try {
+			sc = new Scanner(file);
+			processFile(sc);
+			sc.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 	}
 
-	public Thread createNewThread(String PID) {
+	void processFile(Scanner sc) {
+		Process p = new Process(list.size(), "pc" + list.size(), ProcessState.RUNNING, 0, timeRun + 3, 0);
 
-		Thread thread = new Thread (new PrintTask(PID));
-		 thread.start();
-		 contThread++;
-		 thread.setName(Integer.toString(contThread));
-		 System.out.println(thread.getName() + "  " + PID);
-		 return thread;
+		while (sc.hasNextLine()) {
+			String line = sc.nextLine();
+			createProcess(line);
+			processFile(sc);
+		}
+	}
+
+	void createProcess(String line) {
+		String operation = processOperation(line);
+	}
+
+	String processOperation(String line) {
+		String instruction = "";
+		if (line.contains("generic_instruction")) {
+			generic();
+			tickThread++;
+		}
+		if (line.contains("create_thread")){
+			instruction = line.replaceAll("[^0-9]", "");
+			createThread(Integer.parseInt(instruction));
+			tickThread++;
+		}
+		if (line.contains("call")) {
+			readFile(file2);
+			tickThread++;
+		}
+		if (line.contains("blocking_system_call")) {
+			init.setState(ProcessState.BLOCKED);
+			tickThread++;
+		}
+		else {
+			
+		}
+		
+		return instruction;
+	}
+
+	void generic() {
+	}
+
+	Thread thread;
+	private Thread createThread(int line) {
+		// Cria uma nova thread para o processo
+		// Inicia o program counter na linha recebida
+		Thread t = new Thread();
+		t.start();
+		tickThread = 0;
+		
+	return thread;	
+	}
+	
+	void exibeThread(){
+		System.out.println( tickThread + "\t\t ");
+	}
+
+	Process init;
+	Process pc1;
+	Process pc2;
+
+	// Para testes
+	public void criarProcessos() {
+		Process init = new Process(1, "init", ProcessState.RUNNING, 0, timeRun, 0);
+		Process pc2 = new Process(2, "pc2", ProcessState.RUNNING, 0, timeRun + 3, init.getId());
+		init.addProcessoFilho(pc2);
+		list.add(init);
+		list.add(pc2);
+		System.out.println("Processos iniciados");
+	}
+
+	@Override
+	public void run() {
+		while (keepRunning) {
+			this.timeRun++;
+
+			try {
+				Thread.sleep(tick);
+			} catch (Exception e) {
+
+			}
+		}
+		System.out.println("System terminated after " + timeRun + " ticks.");
+	}
+
+	public void getProcs() {
+		System.out.println(" Estado \t Processo Pai \t Processos Filho \t ID \t Ticks em execução");
+
+		for (Process o : list) {
+			System.out.println(o.getState() + "\t\t\t" + o.getProcessoPai() + "\t\t" + o.getProcessosFilho() + "\t\t "
+					+ o.getId() + "\t\t" + (timeRun - o.getTime()));
+		}
 	}
 
 }
